@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, useState } from "react";
+import SearchRecipeForm from "./components/SearchRecipeForm/SearchRecipeForm";
+import RecipeList from "./components/RecipeList/RecipeList";
+import "./App.css";
+import axios from "axios";
 
-function App() {
+// class App extends Component {
+//   state = {
+//     recipes: [],
+//   };
+
+//   getRecipes = (e) => {
+//     e.preventDefault();
+
+//     const recipeNameInputValue = e.target.recipeNameInput.value;
+//     const recipeSelectValue = e.target.recipesNumberSelect.value;
+
+//     axios
+//       .get(
+//         `https://api.spoonacular.com/recipes/search?apiKey=b9b75c6e8389442389cbfe0dc815a684&query=${recipeNameInputValue}&number=${recipeSelectValue}`
+//       )
+//       .then((response) =>
+//         this.setState({
+//           recipes: [...response.data.results],
+//         })
+//       )
+//       .catch((err) => console.error(err));
+
+//     e.target.reset();
+//   };
+
+//   render() {
+//     return (
+//       <>
+//         <SearchRecipeForm getRecipes={this.getRecipes} />
+//         <RecipeList recipes={this.state.recipes} />
+//       </>
+//     );
+//   }
+// }
+
+// export default App;
+
+const App = () => {
+  const [recipes, setRecipes] = useState([]);
+
+  const getRecipes = (e) => {
+    e.preventDefault();
+
+    const recipeNameInputValue = e.target.recipeNameInput.value;
+    const recipeSelectValue = e.target.recipesNumberSelect.value;
+
+    axios
+      .get(
+        `https://api.spoonacular.com/recipes/search?apiKey=b9b75c6e8389442389cbfe0dc815a684&query=${recipeNameInputValue}&number=${recipeSelectValue}`
+      )
+      .then((res) => {
+        setRecipes([...res.data.results]);
+      })
+      .catch((err) => console.error(err));
+    e.target.reset();
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <SearchRecipeForm getRecipes={getRecipes} />
+      <RecipeList recipes={recipes} />
+    </>
   );
-}
+};
 
 export default App;
